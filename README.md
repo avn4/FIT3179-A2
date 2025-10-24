@@ -1,3 +1,5 @@
+Link to viz: https://avn4.github.io/FIT3179-A2/
+
 Domain (why,who):
 
 The domain sits under sports analytics and asks the question whether national wealth (measured by GDP per capita) translates to football power (high ranking where 1 is best). The goal is to help users spot patterns of wealth vs rank on the global scale and compare it by regions or country. Primary users are both football fans, students exploring the links between economics and sport and journalists who are seeking evidence for commentary. 
