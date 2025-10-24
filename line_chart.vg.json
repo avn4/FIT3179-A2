@@ -1,0 +1,46 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Football Performance Over Time: Wealthy vs Less Wealthy Countries",
+  "width": 420,
+  "height": 280,
+  "data": {
+    "url": "fifa_mens_rank.csv",
+    "format": {
+      "type": "csv",
+      "parse": {
+        "date": "number",
+        "semester": "number",
+        "rank": "number"
+      }
+    }
+  },
+  "transform": [
+    {"filter": "datum.date >= 2019 && datum.date <= 2024 && datum.semester == 2"},
+    {"filter": "(datum.team == 'Australia') || (datum.team == 'United States') || (datum.team == 'USA') || (datum.team == 'Spain') || (datum.team == 'Senegal') || (datum.team == 'Morocco') || (datum.team == 'Uruguay')"}
+  ],
+  "mark": {"type": "line", "point": true, "tooltip": true, "strokeWidth": 2},
+  "encoding": {
+    "x": {
+      "field": "date",
+      "type": "ordinal",
+      "title": "Year",
+      "axis": {"labelAngle": -30},
+      "sort": {"field": "date", "op": "min", "order": "ascending"}
+    },
+
+    "y": {
+      "field": "rank",
+      "type": "quantitative",
+      "title": "FIFA world ranking",
+      "scale": {"reverse": true}
+    },
+
+    "color": {"field": "team", "type": "nominal", "title": "Country"},
+    "detail": {"field": "team" },
+    "tooltip": [
+      {"field": "team", "type": "nominal"},
+      {"field": "rank", "type": "quantitative", "title": "Rank"},
+      {"field": "date", "type": "quantitative", "title": "Year"}
+    ]
+  }
+}

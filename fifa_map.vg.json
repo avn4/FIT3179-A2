@@ -1,0 +1,129 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {"text": "FIFA Men's World Rankings"},
+  "width": 885,
+  "height": 450,
+  "projection": {"type": "equirectangular"},
+
+  "params": [
+    {
+      "name": "Year",
+      "value": 2024,
+      "bind": {"input": "range", "min": 1993, "max": 2024, "step": 1}
+    },
+    {
+      "name": "Sem",
+      "value": 2,
+      "bind": {"input": "select", "options": [1, 2], "name": "Semester: "}
+    }
+  ],
+
+  "layer": [
+    {"data": {"sphere": true}, "mark": {"type": "geoshape", "fill": "lightcyan"}},
+    {"data": {"graticule": {"step": [30, 30]}}, "mark": {"type": "geoshape", "stroke": "silver", "strokeWidth": 0.5}},
+
+    {
+      "data": {
+        "url": "https://vega.github.io/vega-datasets/data/world-110m.json",
+        "format": {"type": "topojson", "feature": "countries"}
+      },
+      "mark": {"type": "geoshape", "fill": "lightgrey", "stroke": "white", "strokeWidth": 0.3},
+      "encoding": {"tooltip": null}
+    },
+
+    {
+      "data": {"url": "fifa_mens_rank.csv"},
+      "transform": [
+        {"filter": "datum.date == Year && datum.semester == Sem"},
+
+        {
+          "lookup": "team",
+          "from": {
+            "data": {
+              "values": [
+                {"team":"USA","country":"United States"},
+                {"team":"England","country":"United Kingdom"},
+                {"team":"Côte d'Ivoire","country":"Cote d'Ivoire"},
+                {"team":"Russia","country":"Russian Federation"},
+                {"team":"Korea Republic","country":"Korea, Republic of"},
+                {"team":"Korea DPR","country":"Korea, Democratic People's Republic of"},
+                {"team":"Syria","country":"Syrian Arab Republic"},
+                {"team":"Vietnam","country":"Viet Nam"},
+                {"team":"Laos","country":"Lao People's Democratic Republic"},
+                {"team":"Eswatini","country":"Swaziland"},
+                {"team":"Czechia","country":"Czech Republic"},
+                {"team":"North Macedonia","country":"Macedonia, the former Yugoslav Republic of"},
+                {"team":"Chinese Taipei","country":"Taiwan, Province of China"}
+              ]
+            },
+            "key": "team",
+            "fields": ["country"]
+          },
+          "as": ["country_alias"]
+        },
+        {"calculate": "isValid(datum.country_alias) ? datum.country_alias : datum.team", "as": "country_match"},
+
+       
+        {
+          "lookup": "country_match",
+          "from": {
+            "data": {
+              "url": "https://raw.githubusercontent.com/KoGor/Map-Icons-Generator/master/data/world-110m-country-names.tsv",
+              "format": {"type": "tsv"}
+            },
+            "key": "name",
+            "fields": ["id"]
+          },
+          "as": ["geo_id"]
+        },
+
+       
+        {
+          "lookup": "geo_id",
+          "from": {
+            "data": {
+              "url": "https://vega.github.io/vega-datasets/data/world-110m.json",
+              "format": {"type": "topojson", "feature": "countries"}
+            },
+            "key": "id",
+            "fields": ["type", "properties", "geometry"]
+          }
+        },
+
+        
+        {
+          "calculate": "datum.rank <= 10 ? '1-10' : (datum.rank <= 25 ? '11-25' : (datum.rank <= 50 ? '26-50' : (datum.rank <= 100 ? '51-100' : '101+')))",
+          "as": "rank_band"
+        }
+      ],
+
+      "mark": {"type": "geoshape", "stroke": "white", "strokeWidth": 0.3},
+
+      "encoding": {
+        "color": {
+          "field": "rank_band",
+          "type": "nominal",
+          "scale": {
+            "domain": ["1-10", "11-25", "26-50", "51-100", "101+" , "No data"],
+            "range":  ["darkgreen", "green", "yellowgreen", "orange", "red", "lightgrey"]
+          },
+          "legend": {"title": "FIFA Rank (bands)"}
+        },
+        "tooltip": [
+          {"field": "team", "type": "nominal", "title": "Team"},
+          {"field": "rank", "type": "quantitative", "title": "Rank"},
+          {"field": "date", "type": "quantitative", "title": "Year"},
+          {"field": "semester", "type": "quantitative", "title": "Semester"}
+        ]
+      }
+    }
+  ]
+}
+
+
+
+
+
+
+
+

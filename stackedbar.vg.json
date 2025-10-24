@@ -1,0 +1,100 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Share of Teams by GDP per Capita Band",
+  "width": 380,
+  "height": 320,
+  "data": { "url": "fifa_mens_rank.csv" },
+  "transform": [
+    { "filter": "datum.date == 2024 && datum.semester == 2" },
+
+    {
+      "lookup": "acronym",
+      "from": {
+        "data": {
+          "values": [
+            {"fifa": "NED", "iso3": "NLD"},
+            {"fifa": "ENG", "iso3": "GBR"},
+            {"fifa": "SCO", "iso3": "GBR"},
+            {"fifa": "WAL", "iso3": "GBR"},
+            {"fifa": "GER", "iso3": "DEU"},
+            {"fifa": "URU", "iso3": "URY"},
+            {"fifa": "SUI", "iso3": "CHE"},
+            {"fifa": "DEN", "iso3": "DNK"},
+            {"fifa": "CRO", "iso3": "HRV"},
+            {"fifa": "KSA", "iso3": "SAU"},
+            {"fifa": "UAE", "iso3": "ARE"},
+            {"fifa": "GRE", "iso3": "GRC"},
+            {"fifa": "TPE", "iso3": "TWN"}
+          ]
+        },
+        "key": "fifa",
+        "fields": ["iso3"]
+      }
+    },
+    {"calculate": "datum.iso3 ? datum.iso3 : datum.acronym", "as": "ISO3"},
+
+    {
+      "lookup": "ISO3",
+      "from": {
+        "data": { "url": "GDP.csv" },
+        "key": "Country Code",
+        "fields": ["2018"]
+      }
+    },
+
+    {"filter": "isValid(datum['2018'])" },
+    {"calculate": "toNumber(datum['2018'])", "as": "gdp_pc_2018"},
+    {"filter": "datum.gdp_pc_2018 >= 0 && datum.gdp_pc_2018 <= 100000"},
+    {
+      "calculate": "datum.gdp_pc_2018 < 25000 ? '0-25k' : datum.gdp_pc_2018 < 50000 ? '25-50k' : '50-100k'",
+      "as": "GDP band (2024 USD)"
+    },
+
+    {
+      "calculate": "datum.rank <= 10? '1-10' : datum.rank <= 25? '11-25': datum.rank <= 50 ? '26-50' : datum.rank <= 100? '51-100' : '101+'",
+      "as": "Rank band"
+    },
+
+    {"aggregate": [{"op": "count", "as": "num_of_teams"}], "groupby": ["GDP band (2024 USD)", "Rank band"]},
+    {
+      "joinaggregate": [{"op": "sum", "field": "num_of_teams", "as": "band_total"}],
+      "groupby": ["GDP band (2024 USD)"]
+    },
+    {"calculate": "datum.num_of_teams / datum.band_total", "as": "share"}
+  ],
+  "mark": {"type": "bar"},
+  "encoding": {
+    "x": {
+      "field": "GDP band (2024 USD)",
+      "type": "nominal",
+      "sort": ["0-25k","25-50k","50-100k"],
+      "axis": {"title": "GDP per capita band (2024 USD)"}
+    },
+
+    "y": {
+      "field": "share",
+      "type": "quantitative",
+      "stack": "normalize",
+      "axis": {"title": "Share of teams"}
+    },
+    "color": {
+      "field": "Rank band",
+      "type": "nominal",
+      "sort": ["1-10","11-25","26-50","51-100","101+"],
+      "legend": {"title": "FIFA rank"}
+    },
+    "tooltip": [
+      {"field": "GDP band (2024 USD)"},
+      {"field": "Rank band"},
+      {"field": "share", "format": ".1%"}
+    ]
+  }
+}
+
+
+
+
+
+
+
+

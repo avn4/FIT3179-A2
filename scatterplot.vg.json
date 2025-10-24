@@ -1,0 +1,72 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "FIFA World Rankings vs GDP per Capita (2024)",
+  "data": {"url": "fifa_mens_rank.csv"},
+  "width": 400,
+  "height":250,
+
+  "params": [
+    {
+      "name": "hover",
+      "select": {"type": "point", "on": "pointerover", "clear": "pointerout", "fields": ["team"] }
+    }
+  ],
+
+  "transform": [
+    {"filter": "toNumber(datum.date) == 2024 && toNumber(datum.semester) == 2"},
+
+    {
+      "lookup": "acronym",
+      "from": {
+        "data": {"url": "GDP.csv", "format": { "type": "csv", "parse": {"2020": "number"}}},
+        "key": "Country Code",
+        "fields": ["2018", "Country"]
+      },
+      "as": ["GDP_2020", "GDP_Country_Name"]
+    },
+
+    {"filter": "isValid(datum.GDP_2020) && datum.GDP_2020 > 0"}
+  ],
+
+  "mark": {"type": "point", "filled": true, "size": 85, "stroke": "white", "strokeWidth": 1.2},
+
+  "encoding": {
+    "x": {
+      "field": "GDP_2020",
+      "type": "quantitative",
+      "title": "GDP Per Capita (sqrt)",
+      "scale": {"type": "sqrt"},
+      "axis": {"tickCount": 6, "labelExpr": "'$' + format(datum.value, '~s')"}
+    },
+    "y": {
+      "field": "rank",
+      "type": "quantitative",
+      "title": "FIFA Rank",
+      "scale": {"reverse": true}
+    },
+    "opacity": {
+      "condition": {"param": "hover", "value": 1},
+      "value": 0.35
+    },
+    "color": { "value": "#4d77d1"},
+    "tooltip": [
+      {"field": "team", "title": "Team" },
+      {"field": "acronym", "title": "Country Code"},
+      {"field": "rank", "title": "Rank"},
+      {"field": "GDP_2020", "title": "GDP", "format": ","}
+    ]
+  },
+
+  "config": {
+    "axis": {"grid": true, "gridOpacity": 0.20, "labelFontSize": 10, "titleFontSize": 12},
+    "title": {"fontSize": 16, "fontWeight": "bold"},
+    "view": {"stroke": "transparent"}
+  }
+}
+
+
+
+
+
+
+

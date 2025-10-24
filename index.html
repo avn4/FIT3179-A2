@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://cdn.jsdelivr.net/npm/vega@5.20.2"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-lite@5.1.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-embed@6.17.0"></script>
+
+<title>Can Money Buy Football Power?</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bitter:wght@300;400;600&display=swap" rel="stylesheet">
+
+
+<style>
+  body{margin:0;background:#0b1220;color:#e6eef6;font-family:'Bitter',serif;line-height:1.5;}
+  .container{max-width:1200px;margin:0 auto;padding:24px;}
+  .wrapper{width:100%;}
+  .title h1{font-family:'Anton', sans-serif;letter-spacing:.5px;margin:0 0 4px 0;font-size:44px;color:#f8e4c1;text-shadow:0 2px 20px rgba(255,255,255,.08);}
+  .lede{max-width:75ch;margin:8px 0 24px 0;color:#9fb0c8}
+  h2{font-family:'Anton', sans-serif;letter-spacing:.3px;color:#d7e7ff;margin:28px 0 8px 0;}
+  p{margin:0 0 14px 0;}
+  .card{background:#0f1729;border:1px solid #1c2738;border-radius:14px;padding:18px;box-shadow:0 10px 24px rgba(0,0,0,.25);}
+  .full{grid-column:1/-1}
+  .vis{width:100%;min-height:320px;}
+  .note{color:#9fb0c8;font-size:.95rem;margin-top:6px}
+  .footer{margin:40px 0;color:#9fb0c8;font-size:.95rem}
+  a{color:#62b6ff;text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  .row{
+    display:grid;
+    grid-template-columns:1.7fr 1fr; 
+    gap:22px;
+    margin-top:22px;
+  }
+  .row.reverse{ grid-template-columns:1fr 1.7fr; }
+  .row .chart .vis{ min-height:360px; }
+  .row .text{ display:flex; flex-direction:column; justify-content:center; }
+  .kicker{
+    margin:0 0 8px 0;
+    font-family:'Anton', sans-serif;
+    letter-spacing:.3px;
+    color:#d7e7ff;
+  }
+
+  @media (max-width:900px){
+    .row, .row.reverse{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="wrapper">
+
+      <header class="title">
+        <h1>Can Money Buy Football Power?</h1>
+        <p class="lede">
+          Do richer nations tend to rank higher in FIFA men's rankings? This page explores that
+          relationship using a global map, a rankincome scatterplot, time-series trajectories,
+          and a distribution by GDP band.
+        </p>
+      </header>
+
+      <section class="card full">
+        <h2>Global Rankings Map</h2>
+        <p class="note">Scan the map to see where top-ranked teams cluster and how regions compare.</p>
+        <div id="mapChart" class="vis"></div>
+      </section>
+
+      <section class="row">
+        <div class="card chart">
+          <h2>Rank vs GDP per Capita</h2>
+          <div id="scatterChart" class="vis"></div>
+        </div>
+        <aside class="card text">
+          <h3 class="kicker">What to look for</h3>
+          <p>Countries with higher GDP per capita tend to concentrate at better (lower) ranks,
+          though outliers exist. Compare neighbours at similar income levels to spot over-performers.</p>
+          <p>Hover the points for country details and look for nations sitting above the cluster
+          (strong rank at modest income).</p>
+        </aside>
+      </section>
+
+      <section class="row reverse">
+        <aside class="card text">
+          <h3 class="kicker">Trajectories over time</h3>
+          <p>Some teams climb steadily while others oscillate. Select a few to see whether changes
+          reflect golden generations, coaching shifts, or federation investment.</p>
+        </aside>
+        <div class="card chart">
+          <h2>Selected Teams Over Time</h2>
+          <div id="lineChart" class="vis"></div>
+        </div>
+      </section>
+
+      <section class="row">
+        <div class="card chart">
+          <h2>Share of Teams by GDP Band</h2>
+          <div id="stackedBarChart" class="vis"></div>
+        </div>
+        <aside class="card text">
+          <h3 class="kicker">Takeaways</h3>
+          <p>Higher-income bands contribute a larger share of top-ranked teams, but football strength isn't
+          purely economicdevelopment pathways and football culture also matter.</p>
+        </aside>
+      </section>
+
+      <footer class="footer">
+        <p>Built with Vega-Lite. Data sources as referenced in the charts.</p>
+      </footer>
+
+    </div>
+  </div>
+  
+  <script src="vega_lite_vis.js"></script>
+</body>
+</html>
+
