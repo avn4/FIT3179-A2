@@ -5,7 +5,7 @@
     background: 'transparent',
     font: 'Bitter',
     axis: {labelColor: '#374151', titleColor: '#374151'},
-    title: {font: 'Anton', color: '#1f2937', fontSize: 18, fontWeight: 700},
+    title: {font: 'Anton', color: '#1f2937', fontSize: 25, labelFontSize: 25, fontWeight: 700},
     view: {stroke: 'transparent'}
   }
 };
@@ -28,4 +28,5 @@
   mount("lineChart", "line_chart.vg.json");
   mount("stackedBarChart", "stackedbar.vg.json");
 })();
+
 
